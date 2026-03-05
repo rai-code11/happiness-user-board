@@ -6,6 +6,8 @@ import Header from "./components/Organisms/Header";
 import UserBoard from "./components/Organisms/UserBoard";
 import AscDescControl from "./components/Organisms/AscDescControl";
 import UserRegistrationForm from "./components/Organisms/UserRegistrationForm";
+import { useDisplay } from "./hooks/useDisplay";
+import { useRegister } from "./hooks/useRegister";
 
 const USER_LIST = [
   {
@@ -131,227 +133,22 @@ const USER_LIST = [
 ];
 
 function App() {
-  const [selectedRole, setSelectedRole] = useState("all");
-  const [allUsers, setAllUsers] = useState(USER_LIST);
-  const [displayUserList, setDisplayedUserList] = useState(USER_LIST);
-  const [currentTab, setCurrentTab] = useState("all");
+  const [selectedRole, setSelectedRole] = useState("all"); //D U
+  const [displayUserList, setDisplayedUserList] = useState(USER_LIST); //D U
+  const [allUsers, setAllUsers] = useState(USER_LIST); //D U
 
-  // 全員、生徒のみ、メンターのみのタブを用意し、選択されたタブに応じてユーザーを絞り込んで表示する
-  const RoleChangeTab = (role) => {
-    setSelectedRole(role);
-    const filteredUserList =
-      role === "all" ? allUsers : allUsers.filter((user) => user.role === role);
-    setDisplayedUserList(filteredUserList);
-  };
+  const { currentTab, handleTabChange, enrichedUsers, handleSort } = useDisplay(
+    setSelectedRole,
+    displayUserList,
+    setDisplayedUserList,
+    allUsers,
+  );
 
-  const handleTabChange = (role) => {
-    setCurrentTab(role); // 見た目の切り替え用
-    RoleChangeTab(role); // 実際のフィルタリング処理用
-  };
-
-  // mentorの対応できる課題番号の初めと終わりの間にstudentの課題番号が入っていたら、そのmentorはそのstudentの対応可能なメンターになる、みたいな機能もつける。
-  // もしmentorでuser.roleがmentorであれば、対応可能な生徒は全員の中から、課題番号がmentorの対応できる課題番号の範囲内に入っているstudentを表示する、みたいな感じで。studentも同様にする。
-
-  const getMatchingUsers = (currentUser, allUsers) => {
-    if (currentUser.role === "student") {
-      return allUsers.filter(
-        (user) =>
-          user.role === "mentor" &&
-          currentUser.taskCode >= user.availableStartCode &&
-          currentUser.taskCode <= user.availableEndCode,
-      );
-    } else if (currentUser.role === "mentor") {
-      return allUsers.filter(
-        (user) =>
-          user.role === "student" &&
-          user.taskCode >= currentUser.availableStartCode &&
-          user.taskCode <= currentUser.availableEndCode,
-      );
-    }
-    return [];
-  };
-
-  const enrichedUsers = displayUserList.map((user) => {
-    const matchedUsers = getMatchingUsers(user, allUsers);
-    const matchedNames =
-      matchedUsers.length > 0
-        ? matchedUsers.map((user) => user.name).join(", ")
-        : "なし";
-    return {
-      ...user,
-      displayMatchedNames: matchedNames,
-      // ロールに応じたラベルなどもここで決めておける
-    };
-  });
-
-  // const sortByStudyMinutesAsc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort(
-  //     (a, b) => a.studyMinutes - b.studyMinutes,
-  //   );
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // const sortByStudyMinutesDesc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort(
-  //     (a, b) => b.studyMinutes - a.studyMinutes,
-  //   );
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // const sortByScoreAsc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort((a, b) => a.score - b.score);
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // const sortByScoreDesc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort((a, b) => b.score - a.score);
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // const sortByExperienceDaysAsc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort(
-  //     (a, b) => a.experienceDays - b.experienceDays,
-  //   );
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // const sortByExperienceDaysDesc = () => {
-  //   const newUserList = [...displayUserList];
-  //   const sortedList = newUserList.sort(
-  //     (a, b) => b.experienceDays - a.experienceDays,
-  //   );
-  //   setDisplayedUserList(sortedList);
-  // };
-
-  // ↓リファクタリング
-
-  const handleSort = (prop, direction) => {
-    const sortedList = [...displayUserList].sort((a, b) => {
-      return direction === "asc" ? a[prop] - b[prop] : b[prop] - a[prop];
-    });
-    setDisplayedUserList(sortedList);
-  };
-
-  // ユーザー新規登録フォームを作成する
-
-  const [newUser, setNewUser] = useState({
-    name: "",
-    role: "",
-    email: "",
-    age: "",
-    postCode: "",
-    phone: "",
-    hobbies: "",
-    url: "",
-    studyMinutes: "",
-    taskCode: "",
-    studyLangs: "",
-    score: "",
-    experienceDays: "",
-    useLangs: "",
-    availableStartCode: "",
-    availableEndCode: "",
-  });
-
-  const onChangeNewUser = (event) => {
-    const { name, value } = event.target;
-    setNewUser({ ...newUser, [name]: value });
-  };
-
-  const handleRegister = (event) => {
-    event.preventDefault();
-
-    // 新規登録ロジックをここに追加
-
-    if (
-      !newUser.name ||
-      !newUser.role ||
-      !newUser.email ||
-      !newUser.age ||
-      !newUser.postCode ||
-      !newUser.phone ||
-      !newUser.hobbies ||
-      !newUser.url
-    ) {
-      alert(
-        "必須項目(名前、ロール、メールアドレス、年齢、郵便番号、電話番号、趣味、URL)を入力してください",
-      );
-      return;
-    }
-
-    if (
-      newUser.role === "student" &&
-      (!newUser.studyMinutes ||
-        !newUser.taskCode ||
-        !newUser.studyLangs ||
-        !newUser.score)
-    ) {
-      alert(
-        "生徒の場合、勉強時間、課題番号、勉強中の言語、ハピネススコアを入力してください",
-      );
-      return;
-    }
-
-    if (
-      newUser.role === "mentor" &&
-      (!newUser.experienceDays ||
-        !newUser.useLangs ||
-        !newUser.availableStartCode ||
-        !newUser.availableEndCode)
-    ) {
-      alert(
-        "メンターの場合、実務経験月数、現場で使っている言語、担当できる課題番号初め、担当できる課題番号終わりを入力してください",
-      );
-      return;
-    }
-
-    // もし入力された項目にカンマが入っていなければ、そのままの値を返して、カンマが入っていたらカンマで区切って配列にして返す関数を作成する。
-
-    const newUserWithArrays = (str) => {
-      if (!str.trim()) return [];
-      return str.split(",").map((item) => item.trim());
-    };
-
-    const registeredUser = {
-      ...newUser,
-      id: Date.now(),
-      hobbies: newUserWithArrays(newUser.hobbies),
-      studyLangs: newUserWithArrays(newUser.studyLangs),
-      useLangs: newUserWithArrays(newUser.useLangs),
-    };
-
-    const newAllUsersList = [...allUsers, registeredUser];
-    setAllUsers(newAllUsersList);
-    setDisplayedUserList(newAllUsersList);
-
-    setNewUser({
-      name: "",
-      role: "",
-      email: "",
-      age: "",
-      postCode: "",
-      phone: "",
-      hobbies: "",
-      url: "",
-      studyMinutes: "",
-      taskCode: "",
-      studyLangs: "",
-      score: "",
-      experienceDays: "",
-      useLangs: "",
-      availableStartCode: "",
-      availableEndCode: "",
-    });
-  };
-
-  //新規登録フォームを用意し、ユーザーを新規で作成するようにする。
-
-  // もし入力したロールがsutudentであれば、特定の項目を入力必須にする、mentorの場合も同様にする。
+  const { newUser, onChangeNewUser, handleRegister } = useRegister(
+    setAllUsers,
+    setDisplayedUserList,
+    allUsers,
+  );
 
   return (
     <>
