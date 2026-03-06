@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import type { User } from "../types/User";
 
-export const useRegister = (setAllUsers, setDisplayedUserList, allUsers) => {
+export const useRegister = (
+  setAllUsers: Dispatch<SetStateAction<User[]>>,
+  setDisplayedUserList: Dispatch<SetStateAction<User[]>>,
+  allUsers: User[],
+) => {
   const [newUser, setNewUser] = useState({
     name: "",
     role: "",
@@ -20,15 +25,20 @@ export const useRegister = (setAllUsers, setDisplayedUserList, allUsers) => {
     availableEndCode: "",
   });
 
-  const onChangeNewUser = (event) => {
+  // 入力された情報から1人のユーザーを作成するための関数
+  const onChangeNewUser = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = event.target;
     setNewUser({ ...newUser, [name]: value });
   };
 
-  const handleRegister = (event) => {
-    event.preventDefault();
+  //入力項目を必須にし、アラートを出すための関数
 
-    // 新規登録ロジックをここに追加
+  const handleRegister = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    event.preventDefault();
 
     if (
       !newUser.name ||
@@ -72,22 +82,54 @@ export const useRegister = (setAllUsers, setDisplayedUserList, allUsers) => {
       return;
     }
 
-    // もし入力された項目にカンマが入っていなければ、そのままの値を返して、カンマが入っていたらカンマで区切って配列にして返す関数を作成する。
+    // 入力された値を配列に変換するための関数
 
-    const newUserWithArrays = (str) => {
+    const newUserWithArrays = (str: string) => {
       if (!str.trim()) return [];
       return str.split(",").map((item) => item.trim());
     };
 
-    const registeredUser = {
-      ...newUser,
+    // 共通項目を作成する
+
+    const common = {
       id: Date.now(),
+      name: newUser.name,
+      email: newUser.email,
+      age: Number(newUser.age),
+      postCode: newUser.postCode,
+      phone: newUser.phone,
       hobbies: newUserWithArrays(newUser.hobbies),
-      studyLangs: newUserWithArrays(newUser.studyLangs),
-      useLangs: newUserWithArrays(newUser.useLangs),
+      url: newUser.url,
     };
 
-    const newAllUsersList = [...allUsers, registeredUser];
+    // 生徒用と講師用の項目を作成する
+    let registeredUser: User;
+
+    if (newUser.role === "student") {
+      registeredUser = {
+        ...common,
+        role: "student",
+        studyMinutes: Number(newUser.studyMinutes),
+        taskCode: Number(newUser.taskCode),
+        studyLangs: newUserWithArrays(newUser.studyLangs),
+        score: Number(newUser.score),
+      };
+    } else if (newUser.role === "mentor") {
+      registeredUser = {
+        ...common,
+        role: "mentor",
+        experienceDays: Number(newUser.experienceDays),
+        useLangs: newUserWithArrays(newUser.useLangs),
+        availableStartCode: Number(newUser.availableStartCode),
+        availableEndCode: Number(newUser.availableEndCode),
+      };
+    } else {
+      return;
+    }
+
+    // ユーザー登録後の全ユーザーの配列
+
+    const newAllUsersList: User[] = [...allUsers, registeredUser];
     setAllUsers(newAllUsersList);
     setDisplayedUserList(newAllUsersList);
 

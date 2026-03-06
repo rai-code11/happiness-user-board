@@ -1,29 +1,35 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import type { User, UserRole } from "../types/User";
 
 export const useDisplay = (
-  setSelectedRole,
-  displayUserList,
-  setDisplayedUserList,
-  allUsers,
+  setSelectedRole: Dispatch<SetStateAction<UserRole>>,
+  displayUserList: User[],
+  setDisplayedUserList: Dispatch<SetStateAction<User[]>>,
+  allUsers: User[],
 ) => {
-  const [currentTab, setCurrentTab] = useState("all"); //D
+  const [currentTab, setCurrentTab] = useState("all");
 
-  const RoleChangeTab = (role) => {
+  // all/student/mentorに応じて表示内容を切り替えるための関数
+
+  const RoleChangeTab = (role: UserRole) => {
     setSelectedRole(role);
-    const filteredUserList =
-      role === "all" ? allUsers : allUsers.filter((user) => user.role === role);
+    const filteredUserList: User[] =
+      role === "all"
+        ? allUsers
+        : allUsers.filter((user: User) => user.role === role);
     setDisplayedUserList(filteredUserList);
   };
 
-  const handleTabChange = (role) => {
-    setCurrentTab(role); // 見た目の切り替え用
-    RoleChangeTab(role); // 実際のフィルタリング処理用
+  // 表示内容切り替えをした際に状態を実際に更新するための関数
+
+  const handleTabChange = (role: UserRole) => {
+    setCurrentTab(role);
+    RoleChangeTab(role);
   };
 
-  // mentorの対応できる課題番号の初めと終わりの間にstudentの課題番号が入っていたら、そのmentorはそのstudentの対応可能なメンターになる、みたいな機能もつける。
-  // もしmentorでuser.roleがmentorであれば、対応可能な生徒は全員の中から、課題番号がmentorの対応できる課題番号の範囲内に入っているstudentを表示する、みたいな感じで。studentも同様にする。
+  // 生徒：対応可能なメンター、メンター：対応可能な生徒をそれぞれ抽出するための関数
 
-  const getMatchingUsers = (currentUser, allUsers) => {
+  const getMatchingUsers = (currentUser: User, allUsers: User[]) => {
     if (currentUser.role === "student") {
       return allUsers.filter(
         (user) =>
@@ -42,7 +48,7 @@ export const useDisplay = (
     return [];
   };
 
-  const enrichedUsers = displayUserList.map((user) => {
+  const enrichedUsers: User[] = displayUserList.map((user) => {
     const matchedUsers = getMatchingUsers(user, allUsers);
     const matchedNames =
       matchedUsers.length > 0
@@ -55,9 +61,18 @@ export const useDisplay = (
     };
   });
 
-  const handleSort = (prop, direction) => {
+  // 特定のプロパティを指定して、昇順、降順に並び替えるための関数
+
+  const handleSort = (prop: keyof User, direction: "asc" | "desc") => {
     const sortedList = [...displayUserList].sort((a, b) => {
-      return direction === "asc" ? a[prop] - b[prop] : b[prop] - a[prop];
+      const ValA = a[prop];
+      const ValB = b[prop];
+      // TypeScriptに比較可能（型が揃っている）であることを伝える
+      if (typeof ValA === "number" && typeof ValB === "number") {
+        return direction === "asc" ? ValA - ValB : ValB - ValA;
+      }
+      // 数値でない場合や、型が合わない場合は0を返す
+      return 0;
     });
     setDisplayedUserList(sortedList);
   };

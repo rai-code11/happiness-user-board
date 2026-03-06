@@ -8,8 +8,38 @@ import AscDescControl from "./components/Organisms/AscDescControl";
 import UserRegistrationForm from "./components/Organisms/UserRegistrationForm";
 import { useDisplay } from "./hooks/useDisplay";
 import { useRegister } from "./hooks/useRegister";
+import type { UserRole } from "./types/User";
 
-const USER_LIST = [
+type BaseUser = {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  postCode: string;
+  phone: string;
+  hobbies: string[];
+  url: string;
+};
+
+type Student = BaseUser & {
+  role: "student";
+  studyMinutes: number;
+  taskCode: number;
+  studyLangs: string[];
+  score: number;
+};
+
+type Mentor = BaseUser & {
+  role: "mentor";
+  experienceDays: number;
+  useLangs: string[];
+  availableStartCode: number;
+  availableEndCode: number;
+};
+
+type User = Student | Mentor;
+
+const USER_LIST: User[] = [
   {
     id: 1,
     name: "鈴木太郎",
@@ -133,9 +163,9 @@ const USER_LIST = [
 ];
 
 function App() {
-  const [selectedRole, setSelectedRole] = useState("all"); //D U
-  const [displayUserList, setDisplayedUserList] = useState(USER_LIST); //D U
-  const [allUsers, setAllUsers] = useState(USER_LIST); //D U
+  const [selectedRole, setSelectedRole] = useState<UserRole>("all");
+  const [displayUserList, setDisplayedUserList] = useState(USER_LIST);
+  const [allUsers, setAllUsers] = useState(USER_LIST);
 
   const { currentTab, handleTabChange, enrichedUsers, handleSort } = useDisplay(
     setSelectedRole,
