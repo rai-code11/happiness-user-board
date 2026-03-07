@@ -1,12 +1,12 @@
-import React from "react";
 import "../../index.css";
+import type { UserRegistrationFormProps } from "../../types/User";
 
 const UserRegistrationForm = ({
   selectedRole,
   newUser,
   onChangeNewUser,
   handleRegister,
-}) => {
+}: UserRegistrationFormProps) => {
   return (
     <>
       {selectedRole === "all" && (
@@ -79,7 +79,7 @@ const UserRegistrationForm = ({
                   />
                 </div>
 
-                {/* 年齢・郵便番号・電話番号 */}
+                {/* 年齢*/}
                 <div className="grid grid-cols-3 gap-2 md:col-span-2">
                   <div>
                     <label
@@ -97,6 +97,7 @@ const UserRegistrationForm = ({
                       onChange={onChangeNewUser}
                     />
                   </div>
+                  {/* 郵便番号 */}
                   <div>
                     <label
                       htmlFor="postCodeForm"
@@ -113,6 +114,7 @@ const UserRegistrationForm = ({
                       onChange={onChangeNewUser}
                     />
                   </div>
+                  {/* 電話番号 */}
                   <div>
                     <label
                       htmlFor="phoneForm"

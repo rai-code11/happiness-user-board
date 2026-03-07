@@ -8,36 +8,7 @@ import AscDescControl from "./components/Organisms/AscDescControl";
 import UserRegistrationForm from "./components/Organisms/UserRegistrationForm";
 import { useDisplay } from "./hooks/useDisplay";
 import { useRegister } from "./hooks/useRegister";
-import type { UserRole } from "./types/User";
-
-type BaseUser = {
-  id: number;
-  name: string;
-  email: string;
-  age: number;
-  postCode: string;
-  phone: string;
-  hobbies: string[];
-  url: string;
-};
-
-type Student = BaseUser & {
-  role: "student";
-  studyMinutes: number;
-  taskCode: number;
-  studyLangs: string[];
-  score: number;
-};
-
-type Mentor = BaseUser & {
-  role: "mentor";
-  experienceDays: number;
-  useLangs: string[];
-  availableStartCode: number;
-  availableEndCode: number;
-};
-
-type User = Student | Mentor;
+import type { User, UserRole } from "./types/User";
 
 const USER_LIST: User[] = [
   {

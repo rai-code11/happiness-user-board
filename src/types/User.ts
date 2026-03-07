@@ -9,7 +9,7 @@ type BaseUser = {
   url: string;
 };
 
-type Student = BaseUser & {
+export type Student = BaseUser & {
   role: "student";
   studyMinutes: number;
   taskCode: number;
@@ -17,7 +17,7 @@ type Student = BaseUser & {
   score: number;
 };
 
-type Mentor = BaseUser & {
+export type Mentor = BaseUser & {
   role: "mentor";
   experienceDays: number;
   useLangs: string[];
@@ -28,3 +28,51 @@ type Mentor = BaseUser & {
 export type User = Student | Mentor;
 
 export type UserRole = "all" | "student" | "mentor";
+
+export type ReturnUseDisplay = {
+  currentTab: UserRole;
+  handleTabChange: (role: UserRole) => void;
+  enrichedUsers: EnrichedUsers[];
+  handleSort: (prop: keyof User, direction: "asc" | "desc") => void;
+};
+
+export type EnrichedUsers = User & {
+  displayMatchedNames: string;
+};
+
+export type HandleSort = (
+  prop: keyof Student | keyof Mentor,
+  direction: "asc" | "desc",
+) => void;
+
+export type AscDescControlType = {
+  selectedRole: UserRole;
+  handleSort: HandleSort;
+};
+
+export type HandleTabChange = (role: string) => void;
+
+export type OnChangeNewUserType = (
+  event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+) => void;
+
+// 生徒、メンターの両方で使用するプロパティ名をすべて取得
+type AllPossibleKeys = keyof Student | keyof Mentor;
+
+// 全てのプロパティ名をstring型に変換、かつroleは3項目に限定
+export type UserFormState = {
+  [K in AllPossibleKeys]?: string;
+} & {
+  role: "student" | "mentor" | "";
+};
+
+export type HandleRegisterType = (
+  event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+) => void;
+
+export type UserRegistrationFormProps = {
+  selectedRole: UserRole;
+  newUser: UserFormState;
+  onChangeNewUser: OnChangeNewUserType;
+  handleRegister: HandleRegisterType;
+};

@@ -1,13 +1,21 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
-import type { User, UserRole } from "../types/User";
+import type {
+  EnrichedUsers,
+  HandleSort,
+  Mentor,
+  ReturnUseDisplay,
+  Student,
+  User,
+  UserRole,
+} from "../types/User";
 
 export const useDisplay = (
   setSelectedRole: Dispatch<SetStateAction<UserRole>>,
   displayUserList: User[],
   setDisplayedUserList: Dispatch<SetStateAction<User[]>>,
   allUsers: User[],
-) => {
-  const [currentTab, setCurrentTab] = useState("all");
+): ReturnUseDisplay => {
+  const [currentTab, setCurrentTab] = useState<UserRole>("all");
 
   // all/student/mentorに応じて表示内容を切り替えるための関数
 
@@ -48,7 +56,9 @@ export const useDisplay = (
     return [];
   };
 
-  const enrichedUsers: User[] = displayUserList.map((user) => {
+  //既存プロパティに対応可能な生徒や対応可能なメンターなどを追加した新しいユーザー情報リスト
+
+  const enrichedUsers: EnrichedUsers[] = displayUserList.map((user) => {
     const matchedUsers = getMatchingUsers(user, allUsers);
     const matchedNames =
       matchedUsers.length > 0
@@ -57,16 +67,20 @@ export const useDisplay = (
     return {
       ...user,
       displayMatchedNames: matchedNames,
-      // ロールに応じたラベルなどもここで決めておける
     };
   });
 
   // 特定のプロパティを指定して、昇順、降順に並び替えるための関数
 
-  const handleSort = (prop: keyof User, direction: "asc" | "desc") => {
+  const handleSort: HandleSort = (prop, direction) => {
     const sortedList = [...displayUserList].sort((a, b) => {
-      const ValA = a[prop];
-      const ValB = b[prop];
+      // TypeScriptにstudent/mentorどちらの可能性もあることを伝える
+      const uA = a as Student & Mentor;
+      const uB = b as Student & Mentor;
+
+      const ValA = uA[prop] ?? "";
+      const ValB = uB[prop] ?? "";
+
       // TypeScriptに比較可能（型が揃っている）であることを伝える
       if (typeof ValA === "number" && typeof ValB === "number") {
         return direction === "asc" ? ValA - ValB : ValB - ValA;

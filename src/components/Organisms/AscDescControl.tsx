@@ -1,7 +1,7 @@
-import React from "react";
 import "../../index.css";
+import type { AscDescControlType } from "../../types/User";
 
-const AscDescControl = ({ selectedRole, handleSort }) => {
+const AscDescControl = ({ selectedRole, handleSort }: AscDescControlType) => {
   return (
     <>
       {" "}
@@ -9,11 +9,11 @@ const AscDescControl = ({ selectedRole, handleSort }) => {
         <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm mt-4">
           <div className="flex flex-wrap gap-6">
             {(selectedRole === "student"
-              ? [
+              ? ([
                   { label: "勉強時間", prop: "studyMinutes" },
                   { label: "ハピネススコア", prop: "score" },
-                ]
-              : [{ label: "実務経験月数", prop: "experienceDays" }]
+                ] as const)
+              : ([{ label: "実務経験月数", prop: "experienceDays" }] as const)
             ).map((item) => (
               <div key={item.prop} className="flex flex-col gap-1.5">
                 <span className="text-xs font-bold text-gray-600 ml-1">

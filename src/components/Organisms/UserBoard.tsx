@@ -1,10 +1,9 @@
-import React from "react";
 import "../../index.css";
+import type { EnrichedUsers } from "../../types/User";
 
-const UserBoard = ({ enrichedUsers }) => {
+const UserBoard = ({ enrichedUsers }: { enrichedUsers: EnrichedUsers[] }) => {
   return (
     <>
-      {" "}
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 whitespace-nowrap">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
@@ -96,23 +95,31 @@ const UserBoard = ({ enrichedUsers }) => {
                 </td>
                 <td className="px-6 py-4">{user.url}</td>
                 <td className="px-6 py-4 text-right font-mono">
-                  {user?.studyMinutes}
+                  {user.role === "student" ? user.studyMinutes : "-"}
                 </td>
-                <td className="px-6 py-4 text-center">{user?.taskCode}</td>
-                <td className="px-6 py-4">{user?.studyLangs?.join(", ")}</td>
+                <td className="px-6 py-4 text-center">
+                  {user.role === "student" ? user.taskCode : "-"}
+                </td>
+                <td className="px-6 py-4">
+                  {user.role === "student" ? user.studyLangs.join(", ") : "-"}
+                </td>
                 <td className="px-6 py-4 text-right font-bold text-orange-600">
-                  {user?.score}
+                  {user.role === "student" ? user.score : "-"}
                 </td>
                 <td className="px-6 py-4 text-sm italic">
                   {user.role === "student" ? user.displayMatchedNames : "-"}
                 </td>
-                <td className="px-6 py-4 text-right">{user?.experienceDays}</td>
-                <td className="px-6 py-4">{user?.useLangs?.join(", ")}</td>
-                <td className="px-6 py-4 text-center">
-                  {user?.availableStartCode}
+                <td className="px-6 py-4 text-right">
+                  {user.role === "mentor" ? user.experienceDays : "-"}
+                </td>
+                <td className="px-6 py-4">
+                  {user.role === "mentor" ? user.useLangs.join(", ") : "-"}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  {user?.availableEndCode}
+                  {user.role === "mentor" ? user.availableStartCode : "-"}
+                </td>
+                <td className="px-6 py-4 text-center">
+                  {user.role === "mentor" ? user.availableEndCode : "-"}
                 </td>
                 <td className="px-6 py-4 text-sm italic">
                   {user.role === "mentor" ? user.displayMatchedNames : "-"}

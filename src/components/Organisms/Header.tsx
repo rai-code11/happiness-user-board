@@ -1,7 +1,13 @@
-import React from "react";
 import "../../index.css";
+import type { HandleTabChange, UserRole } from "../../types/User";
 
-const Header = ({ handleTabChange, currentTab }) => {
+const Header = ({
+  handleTabChange,
+  currentTab,
+}: {
+  handleTabChange: HandleTabChange;
+  currentTab: UserRole;
+}) => {
   return (
     <>
       <div className="container mx-atuo">
