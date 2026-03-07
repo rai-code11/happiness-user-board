@@ -1,13 +1,7 @@
 import "../../index.css";
-import type { HandleTabChange, UserRole } from "../../types/User";
+import type { HeaderPropsType, UserRole } from "../../types/User";
 
-const Header = ({
-  handleTabChange,
-  currentTab,
-}: {
-  handleTabChange: HandleTabChange;
-  currentTab: UserRole;
-}) => {
+const Header = ({ handleTabChange, currentTab }: HeaderPropsType) => {
   return (
     <>
       <div className="container mx-atuo">
@@ -16,7 +10,7 @@ const Header = ({
         </div>
       </div>
       <ul className="flex justify-center space-x-8 border-b border-gray-200 bg-amber-400 pt-2.5">
-        {["all", "student", "mentor"].map((role) => (
+        {(["all", "student", "mentor"] as UserRole[]).map((role) => (
           <li key={role}>
             <button
               onClick={() => handleTabChange(role)}

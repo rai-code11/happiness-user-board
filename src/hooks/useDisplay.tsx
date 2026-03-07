@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import type {
   EnrichedUsers,
   HandleSort,
+  HandleTabChange,
   Mentor,
   ReturnUseDisplay,
   Student,
@@ -30,7 +31,7 @@ export const useDisplay = (
 
   // 表示内容切り替えをした際に状態を実際に更新するための関数
 
-  const handleTabChange = (role: UserRole) => {
+  const handleTabChange: HandleTabChange = (role) => {
     setCurrentTab(role);
     RoleChangeTab(role);
   };

@@ -1,5 +1,9 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
-import type { OnChangeNewUserType, User } from "../types/User";
+import type {
+  HandleRegisterType,
+  OnChangeNewUserType,
+  User,
+} from "../types/User";
 
 export const useRegister = (
   setAllUsers: Dispatch<SetStateAction<User[]>>,
@@ -32,10 +36,7 @@ export const useRegister = (
   };
 
   //入力項目を必須にし、アラートを出すための関数
-
-  const handleRegister = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleRegister: HandleRegisterType = (event) => {
     event.preventDefault();
 
     if (

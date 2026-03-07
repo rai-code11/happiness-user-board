@@ -31,9 +31,9 @@ export type UserRole = "all" | "student" | "mentor";
 
 export type ReturnUseDisplay = {
   currentTab: UserRole;
-  handleTabChange: (role: UserRole) => void;
+  handleTabChange: HandleTabChange;
   enrichedUsers: EnrichedUsers[];
-  handleSort: (prop: keyof User, direction: "asc" | "desc") => void;
+  handleSort: HandleSort;
 };
 
 export type EnrichedUsers = User & {
@@ -50,7 +50,7 @@ export type AscDescControlType = {
   handleSort: HandleSort;
 };
 
-export type HandleTabChange = (role: string) => void;
+export type HandleTabChange = (role: UserRole) => void;
 
 export type OnChangeNewUserType = (
   event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -62,10 +62,8 @@ type AllPossibleKeys = keyof Student | keyof Mentor;
 // 全てのプロパティ名をstring型に変換、かつroleは3項目に限定
 export type UserFormState = {
   [K in AllPossibleKeys]?: string;
-} & {
-  role: "student" | "mentor" | "";
 };
-
+//
 export type HandleRegisterType = (
   event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
 ) => void;
@@ -75,4 +73,9 @@ export type UserRegistrationFormProps = {
   newUser: UserFormState;
   onChangeNewUser: OnChangeNewUserType;
   handleRegister: HandleRegisterType;
+};
+
+export type HeaderPropsType = {
+  currentTab: UserRole;
+  handleTabChange: HandleTabChange;
 };
