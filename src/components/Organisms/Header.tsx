@@ -1,7 +1,18 @@
 import "../../index.css";
-import type { HeaderPropsType, UserRole } from "../../types/User";
+import type { HandleTabChange, UserRole } from "../../types/User";
+
+type HeaderPropsType = {
+  currentTab: UserRole;
+  handleTabChange: HandleTabChange;
+};
 
 const Header = ({ handleTabChange, currentTab }: HeaderPropsType) => {
+  const ROLE_LABEL_MAP = {
+    all: "全員",
+    student: "生徒のみ",
+    mentor: "メンターのみ",
+  };
+
   return (
     <>
       <div className="container mx-atuo">
@@ -20,11 +31,7 @@ const Header = ({ handleTabChange, currentTab }: HeaderPropsType) => {
                   : "border-b-2 border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
-              {role === "all"
-                ? "全員"
-                : role === "student"
-                  ? "生徒のみ"
-                  : "メンターのみ"}
+              {ROLE_LABEL_MAP[role]}
             </button>
           </li>
         ))}

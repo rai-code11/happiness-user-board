@@ -29,13 +29,6 @@ export type User = Student | Mentor;
 
 export type UserRole = "all" | "student" | "mentor";
 
-export type ReturnUseDisplay = {
-  currentTab: UserRole;
-  handleTabChange: HandleTabChange;
-  enrichedUsers: EnrichedUsers[];
-  handleSort: HandleSort;
-};
-
 export type EnrichedUsers = User & {
   displayMatchedNames: string;
 };
@@ -44,11 +37,6 @@ export type HandleSort = (
   prop: keyof Student | keyof Mentor,
   direction: "asc" | "desc",
 ) => void;
-
-export type AscDescControlType = {
-  selectedRole: UserRole;
-  handleSort: HandleSort;
-};
 
 export type HandleTabChange = (role: UserRole) => void;
 
@@ -67,15 +55,3 @@ export type UserFormState = {
 export type HandleRegisterType = (
   event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
 ) => void;
-
-export type UserRegistrationFormProps = {
-  selectedRole: UserRole;
-  newUser: UserFormState;
-  onChangeNewUser: OnChangeNewUserType;
-  handleRegister: HandleRegisterType;
-};
-
-export type HeaderPropsType = {
-  currentTab: UserRole;
-  handleTabChange: HandleTabChange;
-};

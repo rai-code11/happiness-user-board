@@ -1,5 +1,17 @@
 import "../../index.css";
-import type { UserRegistrationFormProps } from "../../types/User";
+import type {
+  HandleRegisterType,
+  OnChangeNewUserType,
+  UserFormState,
+  UserRole,
+} from "../../types/User";
+
+type UserRegistrationFormProps = {
+  selectedRole: UserRole;
+  newUser: UserFormState;
+  onChangeNewUser: OnChangeNewUserType;
+  handleRegister: HandleRegisterType;
+};
 
 const UserRegistrationForm = ({
   selectedRole,
@@ -79,7 +91,7 @@ const UserRegistrationForm = ({
                   />
                 </div>
 
-                {/* 年齢*/}
+                {/* 年齢 */}
                 <div className="grid grid-cols-3 gap-2 md:col-span-2">
                   <div>
                     <label
@@ -329,7 +341,7 @@ const UserRegistrationForm = ({
             <button
               type="submit"
               className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all active:scale-[0.98] shadow-lg shadow-blue-100"
-              onClick={(e) => handleRegister(e)}
+              onClick={handleRegister}
             >
               登録する
             </button>

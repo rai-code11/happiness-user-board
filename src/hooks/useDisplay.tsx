@@ -4,11 +4,17 @@ import type {
   HandleSort,
   HandleTabChange,
   Mentor,
-  ReturnUseDisplay,
   Student,
   User,
   UserRole,
 } from "../types/User";
+
+type ReturnUseDisplay = {
+  currentTab: UserRole;
+  handleTabChange: HandleTabChange;
+  enrichedUsers: EnrichedUsers[];
+  handleSort: HandleSort;
+};
 
 export const useDisplay = (
   setSelectedRole: Dispatch<SetStateAction<UserRole>>,
@@ -20,7 +26,7 @@ export const useDisplay = (
 
   // all/student/mentorに応じて表示内容を切り替えるための関数
 
-  const RoleChangeTab = (role: UserRole) => {
+  const roleChangeTab = (role: UserRole) => {
     setSelectedRole(role);
     const filteredUserList: User[] =
       role === "all"
@@ -33,7 +39,7 @@ export const useDisplay = (
 
   const handleTabChange: HandleTabChange = (role) => {
     setCurrentTab(role);
-    RoleChangeTab(role);
+    roleChangeTab(role);
   };
 
   // 生徒：対応可能なメンター、メンター：対応可能な生徒をそれぞれ抽出するための関数

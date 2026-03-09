@@ -1,5 +1,10 @@
 import "../../index.css";
-import type { AscDescControlType } from "../../types/User";
+import type { HandleSort, UserRole } from "../../types/User";
+
+type AscDescControlType = {
+  selectedRole: UserRole;
+  handleSort: HandleSort;
+};
 
 const AscDescControl = ({ selectedRole, handleSort }: AscDescControlType) => {
   return (
